@@ -1,0 +1,58 @@
+Design Document
+Jeremy Atwell and Raveena Cheema
+Connect 4
+
+Data:
+Board-2D array
+Pieces- 2D array
+File pointers
+Won/tie- bol
+Continue choice- char
+Player names- array of strings
+
+Game Play:
+Player sees a menu which gives them the options to load a new game or load a previous game. They should be prompted to enter both player names and then given each a pice which represents them. Each player takes turns making moves until someone wins or they tie. They will then be taken back to the menu to choose to play again. They can also quit and save in the middle of a game and that is the previos game they can load the next time.
+
+Functions:
+
+main()- April 4th, Jeremy
+Data: Arrays for board and player moves. Variables for won, wins, and play again.
+Functionality: Load the board from the file. Display moves. In a loop, clear player
+moves, play the game, update wins, prompt to play again. After the player is
+done playing, save their score
+
+loadBoard()- April 4th, Raveena
+Input Parameters: File pointer, int rows, int columns, int board 2D array
+Returned Output: none
+Functionality: Load values from file into board 2D array
+
+playGame()- April 4th, Jeremy
+Input Parameters: int rows, int columns, int board 2D array, char moves 2D array
+Returned Output: boolean
+Functionality: Display cells. Repeat getting the user’s move, updating the user
+moves, displaying cells, and checking to see if the user lost or won until the player
+has lost or won. Return whether the game was won or tied
+
+getMove()- April 4th, raveena
+Input Parameters: int* row, int* column
+Returned Output: char
+Functionality: Continue to prompt the player for a cell location until they have
+entered a valid location. Continue to prompt the player for a move type until they
+have entered a valid move type. Update the row and column locations to work
+with the arrays. Return the move type.
+
+updateMoves()- April 4th, Jeremy
+Input Parameters: int rows, int columns, char moves 2D array, char move type, int
+row location, int column location
+Returned Output: void
+Functionality: If the player marked a cell as a move, update that cell to marked with the correct color. If one player gets 4 cells in a row, they win.
+
+gameWon()- April 4th, Raveena
+Input Parameters: int rows, int columns, int board 2D array, char moves 2D array
+Returned Output: bool
+Functionality: If a player has 4 of the same color pices in a row, retunr true otherwise return false. 
+
+gameTie()- April 4th, Jeremy
+INput Paramenters: int rows, int columns, int board 2D array, char moves 2D array
+returned output: bool
+FUnctionality: If all cells are full and there are no 4 in a row connections, retunr true.
