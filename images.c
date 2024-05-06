@@ -10,41 +10,44 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size);
 void display_image(int image[MAX_SIZE][MAX_SIZE], int size);
 void edit_image(int image[MAX_SIZE][MAX_SIZE], int size);
 void save_image(int image[MAX_SIZE][MAX_SIZE], int size);
+void crop_image(int image[MAX_SIZE][MAX_SIZE], int *size);
+void dim_image(int image[MAX_SIZE][MAX_SIZE], int size);
+void brighten_image(int image[MAX_SIZE][MAX_SIZE], int size);
 
 int main(){
 
 	int image[MAX_SIZE][MAX_SIZE]; 
 	int size = 0;
-    	int choice;
+    int choice;
 
-    	do {
-        	printf("\nMenu:\n");
-        	printf("1. Load image\n");
-        	printf("2. Display image\n");
-        	printf("3. Edit image\n");
-        	printf("0. Exit\n");
-        	printf("Choose from one of the options above: ");
-        	scanf("%d", &choice);
+    do {
+        printf("\nMenu:\n");
+        printf("1. Load image\n");
+        printf("2. Display image\n");
+        printf("3. Edit image\n");
+        printf("0. Exit\n");
+        printf("Choose from one of the options above: ");
+        scanf("%d", &choice);
 
         switch (choice) {
-            	case 1:
-                	load_image(image, &size);
-                	break;
-            	case 2:
-                	display_image(image, size);
-                	break;
-            	case 3:
-                	edit_image(image, size);
-                	break;
-            	case 0:
-                	printf("\nGoodbye!\n");
-                	break;
-            	default:
-                	printf("Invalid choice. Please try again.\n");
+            case 1:
+                load_image(image, &size);
+                break;
+            case 2:
+                display_image(image, size);
+                break;
+            case 3:
+                edit_image(image, size);
+                break;
+            case 0:
+                printf("\nGoodbye!\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
         }
-    	} while (choice != 0);
+    } while (choice != 0);
 
-    	return 0;
+    return 0;
 }
 
 void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
@@ -53,7 +56,7 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
     int i, j;
 
     printf("What is the name of the image file? ");
-    scanf("%s", filename);
+    scanf(" %s", filename);
 
     file = fopen(filename, "r");
     if (file == NULL) {
@@ -117,13 +120,13 @@ void edit_image(int image[MAX_SIZE][MAX_SIZE], int size) {
 
         switch (choice) {
             case 1:
-                // crop
+                crop_image(image, &size);
                 break;
             case 2:
-                // dim
+                dim_image(image, size);
                 break;
             case 3:
-                // brighten
+                brighten_image(image, size);
                 break;
             case 4:
                 save_image(image, size);
@@ -164,3 +167,54 @@ void save_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     printf("Edited image saved successfully.\n");
 }
 
+void crop_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
+    int new_size;
+    int start_row, start_col;
+    
+    printf("Enter the size of the new cropped image: ");
+    scanf("%d", &new_size);
+    
+    printf("Enter the starting row and column for cropping (0-indexed): ");
+    scanf("%d %d", &start_row, &start_col);
+    
+    if (start_row < 0 || start_row >= *size || start_col < 0 || start_col >= *size ||
+        start_row + new_size > *size || start_col + new_size > *size) {
+        printf("Invalid crop dimensions. Please try again.\n");
+        return;
+    }
+    
+    *size = new_size;
+    
+    int i, j;
+    for (i = 0; i < new_size; i++) {
+        for (j = 0; j < new_size; j++) {
+            image[i][j] = image[start_row + i][start_col + j];
+        }
+    }
+    
+    printf("Image cropped successfully.\n");
+}
+
+void dim_image(int image[MAX_SIZE][MAX_SIZE], int size) {
+    int i, j;
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            if (image[i][j] > 0) {
+                image[i][j]--;
+            }
+        }
+    }
+    printf("Image dimmed successfully.\n");
+}
+
+void brighten_image(int image[MAX_SIZE][MAX_SIZE], int size) {
+    int i, j;
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            if (image[i][j] < 4) {
+                image[i][j]++;
+            }
+        }
+    }
+    printf("Image brightened successfully.\n");
+}
