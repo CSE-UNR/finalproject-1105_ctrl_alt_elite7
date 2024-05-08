@@ -1,24 +1,23 @@
-// Authors: Jeremy Atwell and Raveena Cheema
-// Due Date: 05/7/24
-// Purpose: Create a program that allows the user to edit images
+//Authors: Jeremy Atwell and Raveena Cheema
+//Due Date: 5/7/24
+//Purpose: Create a program that allows the user to upload an image of any size and edit it
 
 #include <stdio.h>
 
 #define MAX_SIZE 500
 
-void load_image(int image[MAX_SIZE][MAX_SIZE], int *size);
-void display_image(int image[MAX_SIZE][MAX_SIZE], int size);
-void edit_image(int image[MAX_SIZE][MAX_SIZE], int size);
-void save_image(int image[MAX_SIZE][MAX_SIZE], int size);
-void crop_image(int image[MAX_SIZE][MAX_SIZE], int *size);
-void dim_image(int image[MAX_SIZE][MAX_SIZE], int size);
-void brighten_image(int image[MAX_SIZE][MAX_SIZE], int size);
+void load_image(int image[MAX_SIZE][MAX_SIZE], int *rows, int *cols);
+void display_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols);
+void edit_image(int image[MAX_SIZE][MAX_SIZE], int *rows, int *cols);
+void save_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols);
+void crop_image(int image[MAX_SIZE][MAX_SIZE], int *rows, int *cols);
+void dim_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols);
+void brighten_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols);
 
-int main(){
-
-	int image[MAX_SIZE][MAX_SIZE]; 
-	int size = 0;
-    	int choice;
+int main() {
+    int image[MAX_SIZE][MAX_SIZE];
+    int rows = 0, cols = 0;
+    int choice;
 
     do {
         printf("\nMenu:\n");
@@ -31,13 +30,13 @@ int main(){
 
         switch (choice) {
             case 1:
-                load_image(image, &size);
+                load_image(image, &rows, &cols);
                 break;
             case 2:
-                display_image(image, size);
+                display_image(image, rows, cols);
                 break;
             case 3:
-                edit_image(image, size);
+                edit_image(image, &rows, &cols);
                 break;
             case 0:
                 printf("\nGoodbye!\n");
@@ -50,8 +49,11 @@ int main(){
     return 0;
 }
 
-void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
+void load_image(int image[MAX_SIZE][MAX_SIZE], int *rows, int *cols) {
     char filename[50];
+    char imageArray[MAX_SIZE + 1];
+    int col = 0;
+    int row = 0;
     FILE *file;
     int i, j;
 
@@ -63,24 +65,31 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
         printf("Error opening file.\n");
         return;
     }
-
-
-    for (i = 0; i < MAX_SIZE; i++) {
-        for (j = 0; j < MAX_SIZE; j++) {
-            fscanf(file, "%d", &image[i][j]);
-        }
+    while(fgets(imageArray, MAX_SIZE, file) != NULL){
+    	int col = 0;
+    	for(int i = 0; imageArray[i] != '\0'; i++){
+    		 if (imageArray[i] != '\n') {
+    		image[row][col] = imageArray[i] - '0';
+    		col++;
+    		}
+    	} 
+    	if(col>*cols){
+    	*cols = col;
+    	}
+    	row++;
     }
-
+    *rows = row;
+    
     fclose(file);
     printf("Image loaded successfully.\n");
-}
+    }
+    
+void display_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols) {
 
-void display_image(int image[MAX_SIZE][MAX_SIZE], int size) {
-    int i, j;
-
+    int i,j;
     printf("Image:\n");
-    for (i = 0; i < MAX_SIZE; i++) {
-        for (j = 0; j < MAX_SIZE; j++) {
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
             switch (image[i][j]) {
                 case 0:
                     printf(" ");
@@ -97,8 +106,7 @@ void display_image(int image[MAX_SIZE][MAX_SIZE], int size) {
                 case 4:
                     printf("0");
                     break;
-                default:
-                    printf(" ");
+                default:            
                     break;
             }
         }
@@ -106,7 +114,7 @@ void display_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     }
 }
 
-void edit_image(int image[MAX_SIZE][MAX_SIZE], int size) {
+void edit_image(int image[MAX_SIZE][MAX_SIZE], int *rows, int *cols) {
     int choice;
     do {
         printf("\nEdit Menu:\n");
@@ -120,16 +128,16 @@ void edit_image(int image[MAX_SIZE][MAX_SIZE], int size) {
 
         switch (choice) {
             case 1:
-                crop_image(image, &size);
+                crop_image(image, rows, cols);
                 break;
             case 2:
-                dim_image(image, size);
+                dim_image(image, *rows, *cols);
                 break;
             case 3:
-                brighten_image(image, size);
+                brighten_image(image, *rows, *cols);
                 break;
             case 4:
-                save_image(image, size);
+                save_image(image, *rows, *cols);
                 break;
             case 5:
                 printf("Returning to main menu.\n");
@@ -140,7 +148,7 @@ void edit_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     } while (choice != 5);
 }
 
-void save_image(int image[MAX_SIZE][MAX_SIZE], int size) {
+void save_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols) {
     char filename[50];
     FILE *file;
     int i, j;
@@ -154,66 +162,69 @@ void save_image(int image[MAX_SIZE][MAX_SIZE], int size) {
         return;
     }
 
-    //fprintf(file, "%d\n", size);
+    fprintf(file, "%d %d\n", rows, cols);
 
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
             fprintf(file, "%d ", image[i][j]);
         }
+        fprintf(file, "\n");
     }
 
     fclose(file);
     printf("Edited image saved successfully.\n");
 }
 
-void crop_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
-    int new_size;
-    int start_row, start_col;
-    
-    printf("Enter the size of the new cropped image: ");
-    scanf("%d", &new_size);
-    
-    printf("Enter the starting row and column for cropping (0-indexed): ");
-    scanf("%d %d", &start_row, &start_col);
-    
-    if (start_row < 0 || start_row >= *size || start_col < 0 || start_col >= *size ||
-        start_row + new_size > *size || start_col + new_size > *size) {
-        printf("Invalid crop dimensions. Please try again.\n");
-        return;
-    }
-    
-    *size = new_size;
-    
-    int i, j;
-    for (i = 0; i < new_size; i++) {
-        for (j = 0; j < new_size; j++) {
-            image[i][j] = image[start_row + i][start_col + j];
+void crop_image(int image[MAX_SIZE][MAX_SIZE], int *rows, int *cols) {
+    int start_row, end_row, start_col, end_col;
+    int new_rows, new_cols;
+
+    printf("\nThe image you want to crop is %d x %d.\n", *rows, *cols);
+    printf("The row and column values start in the upper lefthand corner.\n\n");
+
+    printf("Which column do you want to be the new left side? ");
+    scanf("%d", &start_col);
+    printf("\nWhich column do you want to be the new right side? ");
+    scanf("%d", &end_col);
+    printf("\nWhich row do you want to be the new top? ");
+    scanf("%d", &start_row);
+    printf("\nWhich row do you want to be the new bottom? ");
+    scanf("%d", &end_row);
+
+    new_rows = end_row - start_row + 1;
+    new_cols = end_col - start_col + 1;
+
+    int cropped_image[MAX_SIZE][MAX_SIZE];
+    for (int i = 0; i < new_rows; i++) {
+        for (int j = 0; j < new_cols; j++) {
+            cropped_image[i][j] = image[start_row + i][start_col + j];
         }
     }
-    
-    printf("Image cropped successfully.\n");
+
+    *rows = new_rows;
+    *cols = new_cols;
+
+    printf("\nImage cropped successfully.\n");
 }
 
-void dim_image(int image[MAX_SIZE][MAX_SIZE], int size) {
-    int i, j;
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+void dim_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
             if (image[i][j] > 0) {
                 image[i][j]--;
             }
         }
     }
-    printf("Image dimmed successfully.\n");
+    printf("\nImage dimmed successfully.\n");
 }
 
-void brighten_image(int image[MAX_SIZE][MAX_SIZE], int size) {
-    int i, j;
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+void brighten_image(int image[MAX_SIZE][MAX_SIZE], int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
             if (image[i][j] < 4) {
                 image[i][j]++;
             }
         }
     }
-    printf("Image brightened successfully.\n");
+    printf("\nImage brightened successfully.\n");
 }
