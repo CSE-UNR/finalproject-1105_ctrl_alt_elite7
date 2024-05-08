@@ -18,7 +18,7 @@ int main(){
 
 	int image[MAX_SIZE][MAX_SIZE]; 
 	int size = 0;
-    int choice;
+    	int choice;
 
     do {
         printf("\nMenu:\n");
@@ -56,7 +56,7 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
     int i, j;
 
     printf("What is the name of the image file? ");
-    scanf(" %s", filename);
+    scanf("%s", filename);
 
     file = fopen(filename, "r");
     if (file == NULL) {
@@ -64,10 +64,9 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
         return;
     }
 
-    fscanf(file, "%d", size);
 
-    for (i = 0; i < *size; i++) {
-        for (j = 0; j < *size; j++) {
+    for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
             fscanf(file, "%d", &image[i][j]);
         }
     }
@@ -80,8 +79,8 @@ void display_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     int i, j;
 
     printf("Image:\n");
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
             switch (image[i][j]) {
                 case 0:
                     printf(" ");
@@ -100,6 +99,7 @@ void display_image(int image[MAX_SIZE][MAX_SIZE], int size) {
                     break;
                 default:
                     printf(" ");
+                    break;
             }
         }
         printf("\n");
@@ -154,13 +154,12 @@ void save_image(int image[MAX_SIZE][MAX_SIZE], int size) {
         return;
     }
 
-    fprintf(file, "%d\n", size);
+    //fprintf(file, "%d\n", size);
 
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
             fprintf(file, "%d ", image[i][j]);
         }
-        fprintf(file, "\n");
     }
 
     fclose(file);
