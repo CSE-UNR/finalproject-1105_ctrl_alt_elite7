@@ -32,6 +32,7 @@ int main(){
         switch (choice) {
             case 1:
                 load_image(image, &size);
+                
                 break;
             case 2:
                 display_image(image, size);
@@ -64,14 +65,14 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
         return;
     }
 
-    fscanf(file, "%d", size);
+    //fscanf(file, "%d", size);
 
-    for (i = 0; i < *size; i++) {
-        for (j = 0; j < *size; j++) {
+    for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
             fscanf(file, "%d", &image[i][j]);
         }
     }
-
+	printf("first value: %d", image[0][0]);
     fclose(file);
     printf("Image loaded successfully.\n");
 }
@@ -79,31 +80,37 @@ void load_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
 void display_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     int i, j;
 
-    printf("Image:\n");
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
-            switch (image[i][j]) {
-                case 0:
-                    printf(" ");
-                    break;
-                case 1:
-                    printf(".");
-                    break;
-                case 2:
-                    printf("o");
-                    break;
-                case 3:
-                    printf("O");
-                    break;
-                case 4:
-                    printf("0");
-                    break;
-                default:
-                    printf(" ");
-            }
+   printf("Image:\n");
+   for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
+            printf( "%d", image[i][j]);
         }
-        printf("\n");
     }
+   // for (i = 0; i < MAX_SIZE; i++) {
+    //    for (j = 0; j < MAX_SIZE; j++) {
+      //      switch (image[i][j]) {
+        //        case 0:
+          //          printf(" ");
+            //        break;
+              //  case 1:
+                //    printf(".");
+                 //   break;
+               // case 2:
+               //     printf("o");
+               //     break;
+               // case 3:
+               //     printf("O");
+               //     break;
+              //  case 4:
+              //      printf("0");
+              //      break;
+              //  default:
+              //     printf(" ");
+         // 	     break;
+        //    }
+       // }
+       printf("\n");	
+    //}
 }
 
 void edit_image(int image[MAX_SIZE][MAX_SIZE], int size) {
@@ -156,8 +163,8 @@ void save_image(int image[MAX_SIZE][MAX_SIZE], int size) {
 
     fprintf(file, "%d\n", size);
 
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
             fprintf(file, "%d ", image[i][j]);
         }
         fprintf(file, "\n");
@@ -197,8 +204,8 @@ void crop_image(int image[MAX_SIZE][MAX_SIZE], int *size) {
 
 void dim_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     int i, j;
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
             if (image[i][j] > 0) {
                 image[i][j]--;
             }
@@ -209,8 +216,8 @@ void dim_image(int image[MAX_SIZE][MAX_SIZE], int size) {
 
 void brighten_image(int image[MAX_SIZE][MAX_SIZE], int size) {
     int i, j;
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (i = 0; i < MAX_SIZE; i++) {
+        for (j = 0; j < MAX_SIZE; j++) {
             if (image[i][j] < 4) {
                 image[i][j]++;
             }
